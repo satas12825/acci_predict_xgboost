@@ -1,0 +1,2 @@
+distance,rain,temp,wind_spd,Speed,WIDTH,humidity,pressure,ROAD_TYPE_1,ROAD_TYPE_2,ROAD_TYPE_3,ROAD_TYPE_5,ROAD_TYPE_6,ROAD_TYPE_7,ROAD_TYPE_9,SURFACE_1,SURFACE_2,SURFACE_3,SURFACE_9,ONEWAY_0,ONEWAY_1,LANE_1,LANE_2,LANE_3,LANE_4,LANE_6,hour_0,hour_1,hour_2,hour_3,hour_4,hour_5,hour_6,hour_7,hour_8,hour_9,hour_10,hour_11,hour_12,hour_13,hour_14,hour_15,hour_16,hour_17,hour_18,hour_19,hour_20,hour_21,hour_22,hour_23
+17.6995786692564,0,28.92,15.120000000000001,45,7,61.02,1006.46,0,0,0,0,0,1,0,1,0,0,0,1,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1

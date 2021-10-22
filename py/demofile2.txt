@@ -1,0 +1,1 @@
+NUMACC,distance,rain,temperatur,wind,ROAD_TYPE,SURFACE,LANE,ONEWAY,Speed
