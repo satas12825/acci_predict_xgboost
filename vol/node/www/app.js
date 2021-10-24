@@ -22,10 +22,7 @@ map.pm.addControls({
     dragMode: false,
     cutPolygon: false,
     rotateMode: false,
-
 });
-
-
 
 
 const mapbox = L.tileLayer(
@@ -58,15 +55,12 @@ const ghyb = L.tileLayer("https://{s}.google.com/vt/lyrs=y,m&x={x}&y={y}&z={z}",
 const baseMap = {
     "Mapbox": mapbox.addTo(map),
     "Google Hybrid": ghyb
-
-
 };
 
 // const overlayMap = {
 //     "ขอบเขตจังหวัด": pro.addTo(map)
 // };
 // L.control.layers(baseMap, overlayMap).addTo(map);
-
 
 function onLocationFound(e) {
 
@@ -96,16 +90,11 @@ let rmLyr = () => {
 }
 
 map.on('pm:create', e => {
-
     console.log(e)
     find(e)
     dist(e)
     getWeather(e)
-
-
 });
-
-
 
 function find(e) {
     // console.log(e)
@@ -116,7 +105,6 @@ function find(e) {
 
     }
     console.log(typeof (data))
-
 
     $.post("http://localhost:3000/api/find", data).done(r => {
         console.log(r);
@@ -133,17 +121,9 @@ function find(e) {
             setTimeout(() => {
                 predict(e)
             }, 1000);
-
-
-
-
         })
-
-
-
     })
 }
-
 
 function dist(e) {
     // console.log(e)
@@ -151,26 +131,17 @@ function dist(e) {
     e.layer.options.name = 'line'
     let data = {
         g: e.layer.toGeoJSON().geometry,
-
     }
     console.log(data)
-
 
     $.post("http://localhost:3000/api/dist", data).done(r => {
         console.log(r);
         r.data.map(i => {
             console.log(i.dist);
             $("#distance").val(i.dist)
-
-
         })
-
-
-
     })
 }
-
-
 
 function getWeather(e) {
     var now = new Date();
@@ -209,7 +180,6 @@ function getWeather(e) {
     }
 
     $.ajax(settings).done(function (response) {
-
         data = response.WeatherForecasts
         data.map((i) => {
             console.log(i.forecasts);
@@ -225,12 +195,7 @@ function getWeather(e) {
             console.log(a.rain, a.rh, a.tc, a.slp, wind_spd);
         })
     });
-
-
 }
-
-
-
 
 let num = []
 let label = []
@@ -257,11 +222,6 @@ function predict(g) {
         let myJSON = `{"roadtype":${road_type}, "surface":${surface}, "lane":${lane},"oneway":${oneway},"speed":${speed},"width":${width},"distance":${distance},"rain":${rain},"humidity":${humidity},"wind_spd":${wind_speed},"temp":${temp},"pressure":${press},"hour":${hour}}`
         console.log(myJSON);
         console.log(myJSON.canApprove);
-
-
-
-
-
 
         $.post("http://127.0.0.1:12345/predict", myJSON).done(r => {
             console.log(r.prediction);
@@ -309,23 +269,13 @@ function predict(g) {
             } else {
                 L.marker([e.coordinates[1], e.coordinates[0]], { pmIgnore: true, icon: redIcon }).addTo(map);
             }
-
             // r.data.map(i => {
             //     console.log(i.dist);
 
             // })
-
-
-
         })
     }, 1000);
-
-
-
 }
-
-
-
 
 function callChart(g, label) {
     // num = g * 100

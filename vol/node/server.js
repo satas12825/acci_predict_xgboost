@@ -14,7 +14,8 @@ app.use(api);
 
 app.use(express.static(__dirname + '/www'));
 
-app.listen(3700, () => {
-    console.log('running on http://localhost:3700')
+const port = 3001
+app.listen(port, () => {
+    console.log(`running on http://localhost:${port}`)
 });
 
