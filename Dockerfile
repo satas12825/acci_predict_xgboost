@@ -20,5 +20,5 @@ RUN npm i -g nodemon
 RUN npm i -g pm2
 
 # install postgres
-RUN apt -y install postgresql
+RUN apt -y install postgresql postgresql-contrib
 RUN apt -y install postgis

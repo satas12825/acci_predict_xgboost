@@ -104,9 +104,8 @@ function find(e) {
         g: e.layer.toGeoJSON().geometry,
 
     }
-    console.log(typeof (data))
-
-    $.post("http://localhost:3000/api/find", data).done(r => {
+    console.log(data)
+    $.post("/api/find", data).done(r => {
         console.log(r);
         r.data.map(i => {
 
@@ -134,7 +133,7 @@ function dist(e) {
     }
     console.log(data)
 
-    $.post("http://localhost:3000/api/dist", data).done(r => {
+    $.post("/api/dist", data).done(r => {
         console.log(r);
         r.data.map(i => {
             console.log(i.dist);
@@ -223,7 +222,7 @@ function predict(g) {
         console.log(myJSON);
         console.log(myJSON.canApprove);
 
-        $.post("http://127.0.0.1:12345/predict", myJSON).done(r => {
+        $.post("http://localhost:3002/predict", myJSON).done(r => {
             console.log(r.prediction);
             percent = r.prediction * 100
             num.push(percent)

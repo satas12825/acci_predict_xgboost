@@ -3,13 +3,16 @@ import joblib
 import traceback
 import pandas as pd
 import numpy as np
-import pandas as pd
 import pickle
-import numpy as np
 import xgboost
 
 # Your API definition
 app = Flask(__name__)
+
+
+@app.route('/testapi', methods=['GET'])
+def test():
+    return jsonify({'tatus': "success 3002"})
 
 
 @app.route('/predict', methods=['POST'])
@@ -141,7 +144,7 @@ def predict():
     f.write(f"\n{distance},{rain},{temp},{wind_speed},{speed},{width},{humidity},{press},{road_type2},{surface2},{oneway2},{lane2},{hour2}")
     f.close()
 
-    dataset = r"E:\StudyLAB\1_2564\499\code\demofile3.csv"
+    dataset = r"demofile3.csv"
     df = pd.read_csv(dataset)
     df = df.dropna(how='any', axis=0)
     feature_names = df.columns.tolist()
@@ -157,13 +160,9 @@ def predict():
     return jsonify({'prediction': b})
 
 
+# if __name__ == '__main__':
+#     port = 3002
+
+#     app.run(port=port, debug=True)
 if __name__ == '__main__':
-    port = 12345  # If you don't provide any port the port will be set to 12345
-
-    # lr = joblib.load("model.pkl")  # Load "model.pkl"
-    # print('Model loaded')
-    # # Load "model_columns.pkl"
-    # model_columns = joblib.load("model_columns.pkl")
-    # print('Model columns loaded')
-
-    app.run(port=port, debug=True)
+    app.run(host="0.0.0.0", port=3002)
