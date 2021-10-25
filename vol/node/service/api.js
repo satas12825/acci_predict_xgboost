@@ -43,14 +43,19 @@ const getdata = () => {
 ////////api499///////////
 app.post('/api/find', function (req, res) {
     let { g } = req.body
-    let geomTxt = JSON.stringify(g)
-    console.log(g)
+    // console.log(g)
+
+
+    // let geomTxt = JSON.stringify(g)
+    let x = JSON.parse(g)
+    // console.log(x);
+
     let sql = `SELECT ra.*,
     st_distance(st_transform(ra.geom,32647),
-    st_transform(ST_geomfromtext('POINT(${g.coordinates[0]} ${g.coordinates[1]})',4326),32647)) as dist 
+    st_transform(ST_geomfromtext('POINT(${x.coordinates[0]} ${x.coordinates[1]})',4326),32647)) as dist 
     FROM (SELECT r.* FROM road_cm r
     WHERE ST_DWithin(st_transform(r.geom,32647),
-    st_transform(ST_geomfromtext('POINT(${g.coordinates[0]} ${g.coordinates[1]})',4326),32647),100)) as ra 
+    st_transform(ST_geomfromtext('POINT(${x.coordinates[0]} ${x.coordinates[1]})',4326),32647),100)) as ra 
     ORDER BY dist asc
     LIMIT 1`
     geo.query(sql).then(r => {
@@ -65,8 +70,11 @@ app.post('/api/find', function (req, res) {
 app.post('/api/dist', function (req, res) {
     let { g } = req.body
     console.log(g.coordinates)
+    let x = JSON.parse(g)
+    console.log(x);
+
     let sql = `SELECT st_distance(st_transform(r.geom,32647),
-    st_transform(ST_geomfromtext('POINT(${g.coordinates[0]} ${g.coordinates[1]})',4326),32647)) as dist 
+    st_transform(ST_geomfromtext('POINT(${x.coordinates[0]} ${x.coordinates[1]})',4326),32647)) as dist 
     FROM road_segment r
     ORDER by dist asc
     LIMIT 1`
@@ -75,7 +83,7 @@ app.post('/api/dist', function (req, res) {
             status: "insert done",
             data: r.rows
         })
-        console.log(r);
+        // console.log(r);
     })
 })
 

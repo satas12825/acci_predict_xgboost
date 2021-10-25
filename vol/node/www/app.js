@@ -97,18 +97,17 @@ map.on('pm:create', e => {
 });
 
 function find(e) {
-    // console.log(e)
+    console.log(e)
     rmLyr()
     e.layer.options.name = 'line'
     let data = {
-        g: e.layer.toGeoJSON().geometry,
-
+        // g: e.layer.toGeoJSON().geometry,
+        g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
     console.log(data)
     $.post("/api/find", data).done(r => {
         console.log(r);
         r.data.map(i => {
-
             $("#road_type").val(i.road_type)
             $("#surface").val(i.surface)
             $("#lane").val(i.lane)
@@ -129,7 +128,8 @@ function dist(e) {
     rmLyr()
     e.layer.options.name = 'line'
     let data = {
-        g: e.layer.toGeoJSON().geometry,
+        // g: e.layer.toGeoJSON().geometry,
+        g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
     console.log(data)
 
