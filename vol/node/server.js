@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser')
 
-const port = 3001
+const port = 6001
 
 const corsOption = {
     origin: `http://localhost:${port}`,
