@@ -61,26 +61,13 @@
         </div>
     </div>
     <br>
-    <div class="container-fluid mt-1 mb-1">
-
-    </div>
 
     <!-- แสดงแผนที่ -->
-    <div class="container mt-1 mb-1">
-        <div class="card-deck p-4">
+    <div class="container mt-1">
+        <div class="card-deck p-1">
             <div class="card card-stats">
-                <div class="card-body p-1 mb-1">
+                <div class="card-body p-1">
                     <!-- <span id="variable"></span>&nbsp;<span style="font-size: small;" id="datetime"></span> -->
-
-
-                    <div class="row">
-                        <div class="col-sm-8">
-                            <div id="map"></div>
-                        </div>
-                        <div class="col-sm-4">
-                            <canvas id="myChart" width="400" height="200"></canvas>
-                        </div>
-                    </div>
                     <input type="hidden" id="road_type">
                     <input type="hidden" id="surface">
                     <input type="hidden" id="lane">
@@ -95,14 +82,27 @@
                     <input type="hidden" id="wind_spd">
                     <input type="hidden" id="hour">
 
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <div id="map"></div>
+                        </div>
+                    </div>
                 </div>
-
             </div>
         </div>
 
+        <div class="card-deck p-1">
+            <div class="card card-stats">
+                <div class="card-body p-1 ">
+                    <div class="row">
+                        <div class="col-sm-12">
+                            <canvas id="myChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-
-
 
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>

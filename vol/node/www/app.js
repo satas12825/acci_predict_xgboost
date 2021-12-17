@@ -44,12 +44,12 @@ const ghyb = L.tileLayer("https://{s}.google.com/vt/lyrs=y,m&x={x}&y={y}&z={z}",
     subdomains: ["mt0", "mt1", "mt2", "mt3"]
 });
 
-// const pro = L.tileLayer.wms("https://rti2dss.com:8443/geoserver/th/wms?", {
-//     layers: "th:province_4326",
-//     format: "image/png",
-//     transparent: true,
-//     CQL_FILTER: 'pro_code=20 OR pro_code=21 OR pro_code=24'
-// });
+const pro = L.tileLayer.wms("https://rti2dss.com:8443/geoserver/th/wms?", {
+    layers: "th:province_4326",
+    format: "image/png",
+    transparent: true,
+    CQL_FILTER: 'pro_code=50'
+});
 
 
 const baseMap = {
@@ -57,10 +57,10 @@ const baseMap = {
     "Google Hybrid": ghyb
 };
 
-// const overlayMap = {
-//     "ขอบเขตจังหวัด": pro.addTo(map)
-// };
-// L.control.layers(baseMap, overlayMap).addTo(map);
+const overlayMap = {
+    "ขอบเขตจังหวัด": pro
+};
+L.control.layers(baseMap, overlayMap).addTo(map);
 
 function onLocationFound(e) {
 
