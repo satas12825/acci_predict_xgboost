@@ -1,0 +1,12 @@
+/usr/bin/env: 'python3\r': No such file or directory
+ * Serving Flask app 'app' (lazy loading)
+ * Environment: production
+   WARNING: This is a development server. Do not use it in a production deployment.
+   Use a production WSGI server instead.
+ * Debug mode: off
+ * Running on all addresses.
+   WARNING: This is a development server. Do not use it in a production deployment.
+ * Running on http://172.17.0.2:3500/ (Press CTRL+C to quit)
+172.17.0.1 - - [17/Dec/2021 11:09:15] "POST /predict HTTP/1.1" 200 -
+172.17.0.1 - - [17/Dec/2021 11:09:21] "POST /predict HTTP/1.1" 200 -
+172.17.0.1 - - [17/Dec/2021 11:09:38] "POST /predict HTTP/1.1" 200 -

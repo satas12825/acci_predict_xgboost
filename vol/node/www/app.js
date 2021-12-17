@@ -89,11 +89,12 @@ let rmLyr = () => {
     })
 }
 
-map.on('pm:create', e => {
-    console.log(e)
-    find(e)
-    dist(e)
-    getWeather(e)
+map.on('pm:create', async (e) => {
+    // console.log(e)
+
+    await dist(e)
+    await getWeather(e)
+    await find(e)
 });
 
 function find(e) {
@@ -101,34 +102,18 @@ function find(e) {
     rmLyr()
     e.layer.options.name = 'line'
     let data = {
-        // g: e.layer.toGeoJSON().geometry,
         g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
     console.log(data)
     $.post("/api/find", data).done(r => {
-        console.log(r);
-        r.data.map(i => {
-            $("#road_type").val(i.road_type)
-            $("#surface").val(i.surface)
-            $("#lane").val(i.lane)
-            $("#oneway").val(i.oneway)
-            $("#speed").val(i.speed)
-            $("#width").val(i.width)
-
-            console.log(i.road_type, i.surface, i.lane, i.oneway, i.speed, i.width);
-            setTimeout(() => {
-                predict(e)
-            }, 1000);
-        })
+        predict(e, r.data[0].road_type, r.data[0].surface, r.data[0].lane, r.data[0].oneway, r.data[0].speed, r.data[0].width)
     })
 }
 
 function dist(e) {
-    // console.log(e)
     rmLyr()
     e.layer.options.name = 'line'
     let data = {
-        // g: e.layer.toGeoJSON().geometry,
         g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
     console.log(data)
@@ -164,7 +149,6 @@ function getWeather(e) {
     $("#hour").val(hour)
 
     g = e.layer.toGeoJSON().geometry
-    console.log(g.coordinates[0]);
 
     var settings = {
         "async": true,
@@ -198,16 +182,17 @@ function getWeather(e) {
 
 let num = []
 let label = []
-function predict(g) {
+let chartDat = []
+function predict(g, _road_type, _surface, _lane, _oneway, _speed, _width) {
 
     setTimeout(() => {
 
-        let road_type = $("#road_type").val()
-        let surface = $("#surface").val()
-        let lane = $("#lane").val()
-        let oneway = $("#oneway").val() == "FT" ? 1 : 0;
-        let speed = $("#speed").val()
-        let width = $("#width").val()
+        let road_type = _road_type
+        let surface = _surface
+        let lane = _lane
+        let oneway = _oneway == "FT" ? 1 : 0;
+        let speed = _speed
+        let width = _width
         let distance = $("#distance").val()
         let rain = $("#rain").val()
         let humidity = $("#humidity").val()
@@ -219,8 +204,8 @@ function predict(g) {
         console.log(rain, road_type);
 
         let myJSON = `{"roadtype":${road_type}, "surface":${surface}, "lane":${lane},"oneway":${oneway},"speed":${speed},"width":${width},"distance":${distance},"rain":${rain},"humidity":${humidity},"wind_spd":${wind_speed},"temp":${temp},"pressure":${press},"hour":${hour}}`
-        console.log(myJSON);
-        console.log(myJSON.canApprove);
+        // console.log(myJSON);
+        // console.log(myJSON.canApprove);
 
         $.post("http://localhost:3500/predict", myJSON).done(r => {
             console.log(r.prediction);
@@ -228,8 +213,18 @@ function predict(g) {
             num.push(percent)
             label.push("ตำแหน่งที่" + num.length)
 
+            color = percent < 50 ? "#009900" : percent < 75 ? "#c9c322" : "#ca273a"
+
+            chartDat.push({
+                "cat": "ตำแหน่งที่" + num.length,
+                "val": percent,
+                "color": color
+            })
+
+
+
             setTimeout(() => {
-                callChart(num, label)
+                showCountChart(chartDat, "myChart", "โอกาสเกิดอุบัติเหตุ (%)")
             }, 700)
 
 
@@ -268,10 +263,6 @@ function predict(g) {
             } else {
                 L.marker([e.coordinates[1], e.coordinates[0]], { pmIgnore: true, icon: redIcon }).addTo(map);
             }
-            // r.data.map(i => {
-            //     console.log(i.dist);
-
-            // })
         })
     }, 1000);
 }
@@ -310,6 +301,101 @@ function callChart(g, label) {
                 y: {
                     beginAtZero: true
                 }
+            }
+        }
+    });
+}
+
+
+let showCountChart = (data, div, label) => {
+    console.log(data, div, label);
+    // Create chart instance
+    var chart = am4core.create(div, am4charts.XYChart);
+
+    // Add data
+    chart.data = data;
+
+    // Create axes
+    var categoryAxis = chart.xAxes.push(new am4charts.CategoryAxis());
+    categoryAxis.dataFields.category = "cat";
+    categoryAxis.renderer.grid.template.location = 0;
+    categoryAxis.renderer.minGridDistance = 30;
+    categoryAxis.renderer.labels.template.horizontalCenter = "right";
+    categoryAxis.renderer.labels.template.verticalCenter = "middle";
+    // categoryAxis.renderer.labels.template.rotation = 270;
+    categoryAxis.tooltip.disabled = true;
+    categoryAxis.renderer.minHeight = 110;
+
+    var valueAxis = chart.yAxes.push(new am4charts.ValueAxis());
+    valueAxis.renderer.minWidth = 50;
+
+    valueAxis.title.text = label;
+
+    // Create series
+    var series = chart.series.push(new am4charts.ColumnSeries());
+    series.sequencedInterpolation = true;
+    series.dataFields.valueY = "val";
+    series.dataFields.categoryX = "cat";
+    // series.tooltipText = "{categoryX}: [bold]{valueY}[/]";
+    series.columns.template.strokeWidth = 0;
+    // series.tooltip.pointerOrientation = "vertical";
+    series.columns.template.column.cornerRadiusTopLeft = 10;
+    series.columns.template.column.cornerRadiusTopRight = 10;
+    // series.columns.template.column.fillOpacity = 0.8;
+
+    var labelBullet = series.bullets.push(new am4charts.LabelBullet());
+    labelBullet.label.verticalCenter = "bottom";
+    labelBullet.label.dy = 0;
+    labelBullet.label.text = "{values.valueY.workingValue.formatNumber('#.')}";
+
+    series.columns.template.adapter.add("fill", function (fill, target) {
+        // return chart.colors.getIndex(target.dataItem.index);
+        return target.dataItem.dataContext["color"];
+    });
+
+    // Cursor
+    chart.cursor = new am4charts.XYCursor();
+
+    chart.exporting.menu = new am4core.ExportMenu();
+    chart.exporting.menu.align = "left";
+    chart.exporting.menu.verticalAlign = "top";
+    chart.exporting.adapter.add("data", function (data, target) {
+        var data = [];
+        chart.series.each(function (series) {
+            for (var i = 0; i < series.data.length; i++) {
+                series.data[i].name = series.name;
+                data.push(series.data[i]);
+            }
+        });
+        return { data: data };
+    });
+
+    var indicator;
+    function showIndicator() {
+        if (indicator) {
+            indicator.show();
+        }
+        else {
+            indicator = chart.tooltipContainer.createChild(am4core.Container);
+            indicator.background.fill = am4core.color("#fff");
+            indicator.background.fillOpacity = 0.8;
+            indicator.width = am4core.percent(100);
+            indicator.height = am4core.percent(100);
+
+            var indicatorLabel = indicator.createChild(am4core.Label);
+            indicatorLabel.text = "ไม่มีข้อมูล";
+            indicatorLabel.align = "center";
+            indicatorLabel.valign = "middle";
+            indicatorLabel.fontSize = 20;
+        }
+    }
+
+    chart.events.on("beforedatavalidated", function (ev) {
+        // console.log(ev.target.data)
+        if (ev.target.data.length == 1) {
+            let dat = ev.target.data
+            if (dat[0].val == 0) {
+                showIndicator();
             }
         }
     });

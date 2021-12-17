@@ -7,7 +7,7 @@
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>dashboard</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" />
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Kanit&display=swap" />
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.css" />
@@ -23,47 +23,21 @@
 
 <body>
 
-    <!-- Menu -->
-    <div class="collapse navbar-collapse" id="navbarSupportedContent">
-        <ul class="navbar-nav mr-auto">
-        </ul>
-        <form class="form-inline my-2 my-lg-0">
-            <input class="form-control mr-sm-2" type="search" placeholder="ค้นหา" aria-label="Search">
-            <button class="btn btn-outline-danger my-2 my-sm-0" type="submit">ค้นหา</button>
-        </form>
-    </div>
-    </nav>
-
-
-    <div class="container-fluid mt-1 mb-1">
-        <div class="col-12">
-            <div class="row">
-                <div class="col-xs-4">
-                    <div id="card">
-                        <img alt="" id="profile">
+    <!-- แสดงแผนที่ -->
+    <div class="container mt-1 mb-1">
+        <div class="card-deck p-1">
+            <div class="card card-stats">
+                <div class="card-body p-3">
+                    <div class="row">
+                        <div class="col-sm-12 ">
+                            <h2 style="font-weight: bold">ความเสี่ยงการเกิดอุบัติเหตุ</h2>
+                            ความเสี่ยงการเกิดอุบัติเหตุบนท้องถนนในพื้นที่อำเภอเมืองเชียงใหม่<br />
+                        </div>
                     </div>
-                </div>
-
-                <div class="col-xs-4 ml-1">
-                    <h5> <span class="badge badge-light" id="displayName"></span></h5>
-                    <span id="statusMessage"></span>
-                </div>
-
-
-
-                <div class="col-xs-4 ml-1">
-                    <br>
-
-                    <h2 style="font-weight: bold">ความเสี่ยงการเกิดอุบัติเหตุ</h2>
-                    ความเสี่ยงการเกิดอุบัติเหตุบนท้องถนนในพื้นที่อำเภอเมืองเชียงใหม่<br />
                 </div>
             </div>
         </div>
-    </div>
-    <br>
 
-    <!-- แสดงแผนที่ -->
-    <div class="container mt-1">
         <div class="card-deck p-1">
             <div class="card card-stats">
                 <div class="card-body p-1">
@@ -96,7 +70,7 @@
                 <div class="card-body p-1 ">
                     <div class="row">
                         <div class="col-sm-12">
-                            <canvas id="myChart"></canvas>
+                            <div id="myChart"></div>
                         </div>
                     </div>
                 </div>
@@ -106,16 +80,13 @@
 
 </body>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.5.0/Chart.min.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/core.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
 <script src="https://cdnjs.com/libraries/Chart.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery.form/4.2.2/jquery.form.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 <!-- leaflet -->
-<script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/leaflet.locatecontrol/dist/L.Control.Locate.min.js" charset="utf-8"></script>
 <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@latest/dist/leaflet-geoman.min.js"></script>
 
@@ -124,14 +95,7 @@
 <!-- amcharts -->
 <script src="https://cdn.amcharts.com/lib/4/core.js"></script>
 <script src="https://cdn.amcharts.com/lib/4/charts.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/kelly.js"></script>
 <script src="https://cdn.amcharts.com/lib/4/themes/animated.js"></script>
-<script src="https://cdn.amcharts.com/lib/4/themes/material.js"></script>
-<!-- datatable -->
-<script src="https://cdn.datatables.net/1.10.23/js/jquery.dataTables.min.js"></script>
-<script src="https://cdn.datatables.net/1.10.23/js/dataTables.bootstrap4.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.6/js/dataTables.responsive.min.js"></script>
-<script src="https://cdn.datatables.net/responsive/2.2.6/js/responsive.bootstrap4.min.js"></script>
 
 <script src="./app.js"></script>
 

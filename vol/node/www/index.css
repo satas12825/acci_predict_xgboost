@@ -1,6 +1,5 @@
 body {
-    font-family: "Kanit", sans-serif;
-    
+    font-family: "Kanit", sans-serif;  
   }
   
   #chartdiv {
@@ -16,6 +15,7 @@ body {
     padding: 0;
     margin: 0;
   }
+  
   html,
   body {
     background-color:#f6f6f8;
