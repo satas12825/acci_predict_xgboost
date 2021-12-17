@@ -222,7 +222,7 @@ function predict(g) {
         console.log(myJSON);
         console.log(myJSON.canApprove);
 
-        $.post("http://localhost:3002/predict", myJSON).done(r => {
+        $.post("http://localhost:3500/predict", myJSON).done(r => {
             console.log(r.prediction);
             percent = r.prediction * 100
             num.push(percent)

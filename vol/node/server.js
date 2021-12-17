@@ -3,7 +3,7 @@ const app = express();
 const cors = require('cors');
 const bodyParser = require('body-parser')
 
-const port = 6001
+const port = 3000
 
 const corsOption = {
     origin: `http://localhost:${port}`,
@@ -19,7 +19,6 @@ const api = require('./service/api');
 app.use(api);
 
 app.use(express.static(__dirname + '/www'));
-
 
 app.listen(port, () => {
     console.log(`running on http://localhost:${port}`)

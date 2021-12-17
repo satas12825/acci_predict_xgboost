@@ -14,6 +14,9 @@ RUN export CPLUS_INCLUDE_PATH=/usr/include/gdal
 RUN export C_INCLUDE_PATH=/usr/include/gdal
 RUN pip install GDAL
 RUN pip install -U flask-cors
+RUN pip install joblib
+RUN pip install pandas
+RUN pip install xgboost
 RUN apt update && apt -y install nodejs
 RUN apt update && apt -y install npm
 RUN npm i -g nodemon
