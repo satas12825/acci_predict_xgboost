@@ -79,7 +79,7 @@ var lc = L.control.locate({
 
 }).addTo(map);
 
-lc.start();
+// lc.start();
 
 let rmLyr = () => {
     map.eachLayer(lyr => {
@@ -91,20 +91,19 @@ let rmLyr = () => {
 
 map.on('pm:create', async (e) => {
     // console.log(e)
-
     await dist(e)
     await getWeather(e)
     await find(e)
 });
 
 function find(e) {
-    console.log(e)
+    // console.log(e)
     rmLyr()
     e.layer.options.name = 'line'
     let data = {
         g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
-    console.log(data)
+    // console.log(data)
     $.post("/api/find", data).done(r => {
         predict(e, r.data[0].road_type, r.data[0].surface, r.data[0].lane, r.data[0].oneway, r.data[0].speed, r.data[0].width)
     })
@@ -116,7 +115,7 @@ function dist(e) {
     let data = {
         g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
-    console.log(data)
+    // console.log(data)
 
     $.post("/api/dist", data).done(r => {
         console.log(r);
@@ -143,8 +142,8 @@ function getWeather(e) {
     }
 
     var dateTime = year + '-' + month + '-' + day
-    console.log(dateTime);
-    console.log(hour);
+    // console.log(dateTime);
+    // console.log(hour);
 
     $("#hour").val(hour)
 
@@ -175,7 +174,7 @@ function getWeather(e) {
             $("#press").val(a.slp)
             $("#wind_spd").val(wind_spd)
 
-            console.log(a.rain, a.rh, a.tc, a.slp, wind_spd);
+            // console.log(a.rain, a.rh, a.tc, a.slp, wind_spd);
         })
     });
 }
@@ -183,131 +182,102 @@ function getWeather(e) {
 let num = []
 let label = []
 let chartDat = []
-function predict(g, _road_type, _surface, _lane, _oneway, _speed, _width) {
+function predict(g, roadtype, surface, lane, oneway, speed, width) {
+    let myJSON = {
+        roadtype,
+        surface,
+        lane,
+        speed,
+        width,
+        oneway: oneway == "FT" ? 1 : 0,
+        "distance": $("#distance").val(),
+        "rain": $("#rain").val(),
+        "humidity": $("#humidity").val(),
+        "wind_spd": $("#wind_spd").val(),
+        "temp": $("#temp").val(),
+        "pressure": $("#press").val(),
+        "hour": $("#hour").val()
+    }
+    // console.log(JSON.stringify(myJSON));
 
-    setTimeout(() => {
+    $.post("http://localhost:3500/predict", JSON.stringify(myJSON)).done(r => {
+        console.log(r.prediction);
+        percent = r.prediction * 100
+        num.push(percent)
+        label.push("ตำแหน่งที่" + num.length)
 
-        let road_type = _road_type
-        let surface = _surface
-        let lane = _lane
-        let oneway = _oneway == "FT" ? 1 : 0;
-        let speed = _speed
-        let width = _width
-        let distance = $("#distance").val()
-        let rain = $("#rain").val()
-        let humidity = $("#humidity").val()
-        let temp = $("#temp").val()
-        let press = $("#press").val()
-        let wind_speed = $("#wind_spd").val()
-        let hour = $("#hour").val()
+        color = percent < 50 ? "#009900" : percent < 75 ? "#c9c322" : "#ca273a"
 
-        console.log(rain, road_type);
-
-        let myJSON = `{"roadtype":${road_type}, "surface":${surface}, "lane":${lane},"oneway":${oneway},"speed":${speed},"width":${width},"distance":${distance},"rain":${rain},"humidity":${humidity},"wind_spd":${wind_speed},"temp":${temp},"pressure":${press},"hour":${hour}}`
-        // console.log(myJSON);
-        // console.log(myJSON.canApprove);
-
-        $.post("http://localhost:3500/predict", myJSON).done(r => {
-            console.log(r.prediction);
-            percent = r.prediction * 100
-            num.push(percent)
-            label.push("ตำแหน่งที่" + num.length)
-
-            color = percent < 50 ? "#009900" : percent < 75 ? "#c9c322" : "#ca273a"
-
-            chartDat.push({
-                "cat": "ตำแหน่งที่" + num.length,
-                "val": percent,
-                "color": color
-            })
-
-
-
-            setTimeout(() => {
-                showCountChart(chartDat, "myChart", "โอกาสเกิดอุบัติเหตุ (%)")
-            }, 700)
-
-
-            let e = g.layer.toGeoJSON().geometry
-            var greenIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-            var redIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-
-            var yellowIcon = new L.Icon({
-                iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
-                shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
-                iconSize: [25, 41],
-                iconAnchor: [12, 41],
-                popupAnchor: [1, -34],
-                shadowSize: [41, 41]
-            });
-            if (r.prediction < 0.5) {
-                L.marker([e.coordinates[1], e.coordinates[0]], { pmIgnore: true, icon: greenIcon }).addTo(map);
-            }
-            else if (0.5 <= r.prediction && r.prediction <= 0.75) {
-                L.marker([e.coordinates[1], e.coordinates[0]], { pmIgnore: true, icon: yellowIcon }).addTo(map);
-            } else {
-                L.marker([e.coordinates[1], e.coordinates[0]], { pmIgnore: true, icon: redIcon }).addTo(map);
-            }
+        chartDat.push({
+            "cat": "ตำแหน่งที่" + num.length,
+            "val": percent,
+            "color": color
         })
-    }, 1000);
-}
 
-function callChart(g, label) {
-    // num = g * 100
-    var ctx = document.getElementById('myChart').getContext('2d');
-    var myChart = new Chart(ctx, {
-        type: 'bar',
-        data: {
-            labels: label,
-            datasets: [{
-                label: 'เปอร์เซ็นความเสี่ยงที่จะเกิดอุบัติเหตุ',
-                data: g,
-                backgroundColor: [
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 99, 132, 0.2)',
-                    'rgba(255, 99, 132, 0.2)'
-                ],
-                borderColor: [
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 99, 132, 1)',
-                    'rgba(255, 99, 132, 1)'
-                ],
-                borderWidth: 1
-            }]
-        },
-        options: {
-            scales: {
-                y: {
-                    beginAtZero: true
-                }
-            }
+        setTimeout(() => {
+            callChart(chartDat, "myChart", "โอกาสเกิดอุบัติเหตุ (%)")
+        }, 700)
+
+
+        let e = g.layer.toGeoJSON().geometry
+        var greenIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-green.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var redIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-red.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+
+        var yellowIcon = new L.Icon({
+            iconUrl: 'https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-2x-yellow.png',
+            shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/images/marker-shadow.png',
+            iconSize: [25, 41],
+            iconAnchor: [12, 41],
+            popupAnchor: [1, -34],
+            shadowSize: [41, 41]
+        });
+        let mk = L.marker()
+        if (r.prediction < 0.5) {
+            mk = L.marker([e.coordinates[1], e.coordinates[0]], {
+                pmIgnore: true,
+                icon: greenIcon,
+                data: myJSON
+            }).addTo(map);
         }
-    });
+        else if (0.5 <= r.prediction && r.prediction <= 0.75) {
+            mk = L.marker([e.coordinates[1], e.coordinates[0]], {
+                pmIgnore: true,
+                icon: yellowIcon,
+                data: myJSON
+            }).addTo(map);
+        } else {
+            mk = L.marker([e.coordinates[1], e.coordinates[0]], {
+                pmIgnore: true,
+                icon: redIcon,
+                data: myJSON
+            }).addTo(map);
+        }
+
+        mk.on('mouseover', (e) => {
+            highlightFeature(e)
+        })
+        mk.on('mouseout', (e) => {
+            resetHighlight(e)
+        })
+    })
 }
 
-
-let showCountChart = (data, div, label) => {
+let callChart = (data, div, label) => {
     console.log(data, div, label);
     // Create chart instance
     var chart = am4core.create(div, am4charts.XYChart);
@@ -320,7 +290,7 @@ let showCountChart = (data, div, label) => {
     categoryAxis.dataFields.category = "cat";
     categoryAxis.renderer.grid.template.location = 0;
     categoryAxis.renderer.minGridDistance = 30;
-    categoryAxis.renderer.labels.template.horizontalCenter = "right";
+    // categoryAxis.renderer.labels.template.horizontalCenter = "right";
     categoryAxis.renderer.labels.template.verticalCenter = "middle";
     // categoryAxis.renderer.labels.template.rotation = 270;
     categoryAxis.tooltip.disabled = true;
@@ -399,4 +369,44 @@ let showCountChart = (data, div, label) => {
             }
         }
     });
+}
+
+
+var info = L.control({ position: 'bottomright' });
+
+info.onAdd = function (map) {
+    this._div = L.DomUtil.create('div', 'info'); // create a div with a class "info"
+    this.update();
+    return this._div;
+};
+
+info.update = function (props) {
+    console.log(props);
+    if (props) {
+        this._div.innerHTML = `<b>ระยะห่างจากทางแยก:</b> ${Number(props.distance).toFixed(2)}  เมตร <br/>
+        <b>ความชื้นสัมพัทธ์:</b> ${props.humidity}  <br/>
+        <b>ความเร็วลม:</b> ${props.wind_spd} <br/>
+        <b>อุณหภูมิ:</b> ${props.temp}  <br/>
+        <b>ความกดอากาศ:</b>${props.pressure}  <br/>
+        <b>จำนวนช่องทางเดินรถ:</b>${props.lane} <br/>
+        <b>ความก้างของถนน:</b> ${props.width} <br/>
+        <b>พื้นผิวจราจร:</b>${props.surface}  <br/>`;
+    } else {
+        this._div.innerHTML = ''
+    }
+
+};
+
+info.addTo(map);
+
+function highlightFeature(e) {
+    console.log(e);
+    info.update(e.target.options.data);
+}
+
+function resetHighlight(e) {
+    info.update();
+    // this._div.innerHTML = ''
+
+    // info.update(e.target.options.data);
 }
