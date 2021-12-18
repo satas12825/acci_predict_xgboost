@@ -12,8 +12,8 @@ let map = L.map("map", {
 // const urlnode = 'http://localhost:3000';
 // const urlflask = 'http://localhost:3500';
 
-const urlnode = 'http://34.87.86.125/fapi ';
-const urlflask = 'http://34.87.86.125/napi ';
+const urlnode = 'http://34.87.86.125/napi';
+const urlflask = 'http://34.87.86.125/fapi';
 
 map.pm.addControls({
     position: 'topleft',
