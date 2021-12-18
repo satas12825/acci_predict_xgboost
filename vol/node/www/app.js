@@ -9,7 +9,11 @@ let map = L.map("map", {
     zoom: 13
 });
 
-// const url = 'http://localhost:3700';
+// const urlnode = 'http://localhost:3000';
+// const urlflask = 'http://localhost:3500';
+
+const urlnode = 'http://34.87.86.125/fapi ';
+const urlflask = 'http://34.87.86.125/napi ';
 
 map.pm.addControls({
     position: 'topleft',
@@ -104,7 +108,7 @@ function find(e) {
         g: JSON.stringify(e.layer.toGeoJSON().geometry)
     }
     // console.log(data)
-    $.post("/api/find", data).done(r => {
+    $.post(urlnode + "/api/find", data).done(r => {
         predict(e, r.data[0].road_type, r.data[0].surface, r.data[0].lane, r.data[0].oneway, r.data[0].speed, r.data[0].width)
     })
 }
@@ -117,7 +121,7 @@ function dist(e) {
     }
     // console.log(data)
 
-    $.post("/api/dist", data).done(r => {
+    $.post(urlnode + "/api/dist", data).done(r => {
         console.log(r);
         r.data.map(i => {
             console.log(i.dist);
@@ -200,7 +204,7 @@ function predict(g, roadtype, surface, lane, oneway, speed, width) {
     }
     // console.log(JSON.stringify(myJSON));
 
-    $.post("http://localhost:3500/predict", JSON.stringify(myJSON)).done(r => {
+    $.post(urlflask + "/predict", JSON.stringify(myJSON)).done(r => {
         console.log(r.prediction);
         percent = r.prediction * 100
         num.push(percent)
@@ -407,6 +411,5 @@ function highlightFeature(e) {
 function resetHighlight(e) {
     info.update();
     // this._div.innerHTML = ''
-
     // info.update(e.target.options.data);
 }
