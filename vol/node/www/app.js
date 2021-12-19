@@ -55,7 +55,6 @@ const pro = L.tileLayer.wms("https://rti2dss.com:8443/geoserver/th/wms?", {
     CQL_FILTER: 'pro_code=50'
 });
 
-
 const baseMap = {
     "Mapbox": mapbox.addTo(map),
     "Google Hybrid": ghyb
